@@ -6,7 +6,7 @@
         <h2 class="title">
           Lorem ipsum dolor sit
         </h2>
-        <CatalogFilter />
+        <CatalogFilter v-if="getLoadingState" />
         <Catalog />
       </div>
     </div>
@@ -19,6 +19,7 @@ import Banner from 'components/Banner.vue';
 import CatalogFilter from 'components/CatalogFilter.vue';
 import Catalog from 'components/Catalog.vue';
 import Map from 'components/Map.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Home',
@@ -27,6 +28,10 @@ export default {
     Catalog,
     Banner,
     Map,
+  },
+
+  computed: {
+    ...mapGetters(['getLoadingState']),
   },
 };
 </script>

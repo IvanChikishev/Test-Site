@@ -2,20 +2,18 @@
 /* eslint-disable no-param-reassign */
 export default {
   actions: {
-    async dataRequest(ctx) {
-      await new Promise((resolve) => {
-        const xhr = new XMLHttpRequest();
-        const url = 'api/data.json';
-        xhr.open('GET', url);
-        xhr.send();
-        xhr.addEventListener('readystatechange', () => {
-          if (xhr.readyState === 4 && xhr.status === 200) {
-            ctx.commit('UPDATE_CATALOG', JSON.parse(xhr.responseText));
-            ctx.commit('UPDATE_DEFAULT_FILTER', JSON.parse(xhr.responseText));
-            ctx.commit('CLEAR_FILTER');
-          }
-          resolve();
-        });
+    dataRequest(ctx) {
+      const xhr = new XMLHttpRequest();
+      const url = 'api/data.json';
+      xhr.open('GET', url);
+      xhr.send();
+      xhr.addEventListener('readystatechange', () => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          ctx.commit('UPDATE_CATALOG', JSON.parse(xhr.responseText));
+          ctx.commit('UPDATE_DEFAULT_FILTER', JSON.parse(xhr.responseText));
+          ctx.commit('CLEAR_FILTER');
+          ctx.commit('UPDATE_LOADER', true);
+        }
       });
     },
   },
@@ -23,8 +21,12 @@ export default {
     catalog: null,
     filter: null,
     defaultFilter: null,
+    loadingState: false,
   },
   mutations: {
+    UPDATE_LOADER(state, val) {
+      state.loadingState = val;
+    },
     CREATE_ITEM_CATALOG({ catalog }, newItem) {
       catalog.push(newItem);
     },
@@ -78,5 +80,6 @@ export default {
     getCatalog(state) { return state.catalog; },
     getFilter(state) { return state.filter; },
     getDefaultFilter(state) { return state.defaultFilter; },
+    getLoadingState(state) { return state.loadingState; },
   },
 };
