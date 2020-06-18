@@ -137,7 +137,7 @@ const developmentConfig = {
     historyApiFallback: true,
     watchContentBase: true,
     open: false,
-    hot: true,
+    hot: false,
     overlay: true,
     port: 8000,
   },

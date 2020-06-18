@@ -73,3 +73,20 @@ input, textarea, button, label {
         }
     }
 }
+
+.controls-slider {
+    &__input {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        & span {
+            margin: 0 5px;
+            opacity: .5;
+        }
+        & input {
+            width: 80px;
+            height: 40px;
+            text-align: center;
+        }
+    }
+}

@@ -53,7 +53,7 @@ hr {
 }
 
 .block {
-    margin: 0 30px;
+    margin: 0 20px;
     padding: 70px 0;
     border-radius: 10px;
     &--bg {   
@@ -66,5 +66,27 @@ hr {
     margin: 0 auto;
     &--full { 
         max-width: 1170px;
+    }
+}
+
+.vue-slider {
+    background: $gray-400;
+    border-radius: 15px;
+    & .vue-slider-rail {
+        background-color: initial;
+        width: calc(100% - 50px);
+        margin: 0 auto;
+    }
+    & .vue-slider-process {
+        background-color: $primary;
+    }
+    & .vue-slider-dot {
+        width: 24px !important;
+        height: 24px !important;
+    }
+    & .vue-slider-dot-handle {
+        background-color: $primary;
+        border: 4px solid $white;
+        box-shadow: none;
     }
 }
