@@ -50,6 +50,7 @@
       <VueSlider
         v-model="filter.floor"
         :tooltip="'none'"
+        v-bind="{ min: defaultFilter.floor[0], max: defaultFilter.floor[1] }"
         style="padding: 0;"
       />
     </div>
@@ -73,6 +74,7 @@
       <VueSlider
         v-model="filter.square"
         :tooltip="'none'"
+        v-bind="{ min: defaultFilter.square[0], max: defaultFilter.square[1] }"
         style="padding: 0;"
       />
     </div>
@@ -96,6 +98,7 @@
       <VueSlider
         v-model="filter.price"
         :tooltip="'none'"
+        v-bind="{ min: defaultFilter.price[0], max: defaultFilter.price[1] }"
         style="padding: 0;"
       />
     </div>
@@ -122,8 +125,6 @@
 </template>
 
 <script>
-
-// v-bind="{ min: getDefaultFilter.floor[0], max: getDefaultFilter.floor[1] }"
 import VueSlider from 'vue-slider-component';
 import 'vue-slider-component/theme/default.css';
 import { mapGetters } from 'vuex';
@@ -144,11 +145,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getFilter', 'getDefaultFilter']),
-    filter() {
-      console.log(this.getFilter);
-      return this.getFilter;
-    },
+    ...mapGetters({
+      filter: 'getFilter',
+      defaultFilter: 'getDefaultFilter',
+    }),
   },
   methods: {
     buttonRooms(val) {

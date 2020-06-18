@@ -2,17 +2,20 @@
 /* eslint-disable no-param-reassign */
 export default {
   actions: {
-    dataRequest(ctx) {
-      const xhr = new XMLHttpRequest();
-      const url = 'api/data.json';
-      xhr.open('GET', url);
-      xhr.send();
-      xhr.addEventListener('readystatechange', () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          ctx.commit('UPDATE_CATALOG', JSON.parse(xhr.responseText));
-          ctx.commit('UPDATE_DEFAULT_FILTER', JSON.parse(xhr.responseText));
-          ctx.commit('CLEAR_FILTER');
-        }
+    async dataRequest(ctx) {
+      await new Promise((resolve) => {
+        const xhr = new XMLHttpRequest();
+        const url = 'api/data.json';
+        xhr.open('GET', url);
+        xhr.send();
+        xhr.addEventListener('readystatechange', () => {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            ctx.commit('UPDATE_CATALOG', JSON.parse(xhr.responseText));
+            ctx.commit('UPDATE_DEFAULT_FILTER', JSON.parse(xhr.responseText));
+            ctx.commit('CLEAR_FILTER');
+          }
+          resolve();
+        });
       });
     },
   },

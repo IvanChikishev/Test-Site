@@ -70,8 +70,8 @@ export default {
       return catalog;
     },
   },
-  created() {
-    this.$store.dispatch('dataRequest');
+  async created() {
+    await this.$store.dispatch('dataRequest');
   },
 };
 </script>
