@@ -80,12 +80,10 @@ export default {
     PhoneMaskInput,
   },
   props: { showFeedback: Boolean },
-  data() {
-    return {
-      phone: '',
-      isValid: false,
-    };
-  },
+  data: () => ({
+    phone: '',
+    isValid: false,
+  }),
   watch: {
     phone(val) {
       this.isValid = !val.includes('_');

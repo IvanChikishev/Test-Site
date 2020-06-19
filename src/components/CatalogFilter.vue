@@ -10,7 +10,7 @@
           v-for="item in rooms"
           :id="item.id"
           :key="item.id"
-          v-model="filter.room"
+          v-model="room"
           type="radio"
           :value="item.value"
         >
@@ -21,7 +21,7 @@
           :key="item.id"
           type="button"
           class="btn btn--filter"
-          :class="{'btn--primary': item.value == filter.room}"
+          :class="{'btn--primary': item.value == room}"
           :aria-label="item.name"
           :title="item.name"
           @click="buttonRooms(item.value)"
@@ -31,24 +31,24 @@
       </div>
     </div>
     <div class="controls-slider">
-      <label for="floor-min">Комнаты</label>
+      <label for="floor-min">Этаж</label>
       <div class="controls-slider__input">
         <input
           id="floor-min"
-          v-model.number="filter.floor[0]"
+          v-model.number="floor[0]"
           type="text"
           class="form-control"
         >
         <span>-</span>
         <input
           id="floor-max"
-          v-model.number="filter.floor[1]"
+          v-model.number="floor[1]"
           type="text"
           class="form-control"
         >
       </div>
       <VueSlider
-        v-model="filter.floor"
+        v-model="floor"
         :tooltip="'none'"
         v-bind="{ min: defaultFilter.floor[0], max: defaultFilter.floor[1] }"
         style="padding: 0;"
@@ -59,20 +59,20 @@
       <div class="controls-slider__input">
         <input
           id="square-min"
-          v-model.number="filter.square[0]"
+          v-model.number="square[0]"
           type="text"
           class="form-control"
         >
         <span>-</span>
         <input
           id="square-max"
-          v-model.number="filter.square[1]"
+          v-model.number="square[1]"
           type="text"
           class="form-control"
         >
       </div>
       <VueSlider
-        v-model="filter.square"
+        v-model="square"
         :tooltip="'none'"
         v-bind="{ min: defaultFilter.square[0], max: defaultFilter.square[1] }"
         style="padding: 0;"
@@ -83,21 +83,22 @@
       <div class="controls-slider__input">
         <input
           id="price-min"
-          v-model.number="filter.price[0]"
+          v-model.number="price[0]"
           type="text"
           class="form-control"
         >
         <span>-</span>
         <input
           id="price-max"
-          v-model.number="filter.price[1]"
+          v-model.number="price[1]"
           type="text"
           class="form-control"
         >
       </div>
       <VueSlider
-        v-model="filter.price"
+        v-model="price"
         :tooltip="'none'"
+        :interval="0.1"
         v-bind="{ min: defaultFilter.price[0], max: defaultFilter.price[1] }"
         style="padding: 0;"
       />
@@ -134,31 +135,62 @@ export default {
   components: {
     VueSlider,
   },
-  data() {
-    return {
-      rooms: [
-        { id: 'studio', value: 'XS', name: 'Квартира студия' },
-        { id: 'one-room', value: '1k', name: 'Однокомнатная квартира' },
-        { id: 'two-room', value: '2k', name: 'Двухкомнатная квартира' },
-        { id: 'three-room', value: '3k', name: 'Трехкомнатная квартира' },
-      ],
-    };
-  },
+  data: () => ({
+    rooms: [
+      { id: 'studio', value: 'XS', name: 'Квартира студия' },
+      { id: 'one-room', value: '1k', name: 'Однокомнатная квартира' },
+      { id: 'two-room', value: '2k', name: 'Двухкомнатная квартира' },
+      { id: 'three-room', value: '3k', name: 'Трехкомнатная квартира' },
+    ],
+    filterLocal: null,
+    defaultFilter: {
+      name: '',
+      floor: [1, 99],
+      square: [1, 99],
+      price: [1, 999],
+    },
+    room: '',
+    floor: [1, 99],
+    square: [1, 99],
+    price: [1, 999],
+  }),
   computed: {
-    ...mapGetters({
-      filter: 'getFilter',
-      defaultFilter: 'getDefaultFilter',
-    }),
+    ...mapGetters(['getFilter', 'getDefaultFilter']),
+  },
+  watch: {
+    getFilter: {
+      handler(filter) {
+        if (filter) {
+          this.room = filter.room;
+          this.floor = filter.floor;
+          this.square = filter.square;
+          this.price = filter.price;
+        }
+      },
+      immediate: true,
+    },
+    getDefaultFilter: {
+      handler(filter) {
+        if (filter) this.defaultFilter = filter;
+      },
+      immediate: true,
+    },
   },
   methods: {
     buttonRooms(val) {
-      this.filter.room = val;
+      this.room = val;
     },
     clearFilter() {
       this.$store.commit('CLEAR_FILTER');
     },
     submit() {
-      this.$store.commit('UPDATE_FILTER', this.filter);
+      this.filterLocal = {
+        room: this.room,
+        floor: this.floor,
+        square: this.square,
+        price: this.price,
+      };
+      this.$store.commit('UPDATE_FILTER', this.filterLocal);
     },
   },
 };
@@ -173,6 +205,9 @@ export default {
   & label {
     text-transform: uppercase;
     font-family: $font-family-base-bold;
+    & span {
+      text-transform: none;
+    }
   }
   &__rooms {
     &-controls {
@@ -201,6 +236,30 @@ export default {
         width: 80px;
         height: 40px;
         text-align: center;
+      }
+    }
+  }
+  &__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    & .btn--primary {
+      margin-top: 27px;
+    }
+    & .btn--empty {
+      position: relative;
+      font-size: 10px;
+      color: $black;
+      width: auto;
+      border-radius: 0;
+      &:after {
+        content: '';
+        width: 100%;
+        height: 1px;
+        background-color: $primary;
+        position: absolute;
+        bottom: 5px;
+        left: 0;
       }
     }
   }

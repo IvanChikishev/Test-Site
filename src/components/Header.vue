@@ -45,12 +45,10 @@ export default {
     Burger,
     Menu,
   },
-  data() {
-    return {
-      showMenu: false,
-      showFeedback: false,
-    };
-  },
+  data: () => ({
+    showMenu: false,
+    showFeedback: false,
+  }),
   methods: {
     toggleMenu() {
       this.showMenu = !this.showMenu;

@@ -1,21 +1,17 @@
-/* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
 export default {
   actions: {
-    async dataRequest(ctx) {
-      await new Promise((resolve) => {
-        const xhr = new XMLHttpRequest();
-        const url = 'api/data.json';
-        xhr.open('GET', url);
-        xhr.send();
-        xhr.addEventListener('readystatechange', () => {
-          if (xhr.readyState === 4 && xhr.status === 200) {
-            ctx.commit('UPDATE_CATALOG', JSON.parse(xhr.responseText));
-            ctx.commit('UPDATE_DEFAULT_FILTER', JSON.parse(xhr.responseText));
-            ctx.commit('CLEAR_FILTER');
-          }
-          resolve();
-        });
+    dataRequest(ctx) {
+      const xhr = new XMLHttpRequest();
+      const url = 'api/data.json';
+      xhr.open('GET', url);
+      xhr.send();
+      xhr.addEventListener('readystatechange', () => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          ctx.commit('UPDATE_CATALOG', JSON.parse(xhr.responseText));
+          ctx.commit('UPDATE_DEFAULT_FILTER', JSON.parse(xhr.responseText));
+          ctx.commit('CLEAR_FILTER');
+        }
       });
     },
   },
@@ -35,7 +31,7 @@ export default {
       let item = catalog.find(({ id }) => id === upItem.id);
       if (item) item = upItem;
     },
-    DATELE_ITEM_CATALOG({ catalog }, itemID) {
+    DELETE_ITEM_CATALOG({ catalog }, itemID) {
       catalog.splice(itemID, 1);
     },
 
@@ -64,7 +60,7 @@ export default {
       };
 
       state.defaultFilter = {
-        room: 'XS',
+        room: '',
         floor: [floor.min, floor.max],
         square: [square.min, square.max],
         price: [price.min, price.max],
@@ -75,8 +71,21 @@ export default {
     },
   },
   getters: {
-    getCatalog(state) { return state.catalog; },
     getFilter(state) { return state.filter; },
     getDefaultFilter(state) { return state.defaultFilter; },
+    filteredCatalog: (state) => {
+      if (state.catalog) {
+        const { filter } = state;
+        return state.catalog.filter((el) => {
+          const room = filter.room ? el.short === filter.room : true;
+          const floor = el.floor >= filter.floor[0] && el.floor <= filter.floor[1];
+          const square = el.square >= filter.square[0] && el.square <= filter.square[1];
+          const iPrice = Math.trunc((el.price_full / 1000000) * 10) / 10;
+          const price = iPrice >= filter.price[0] && iPrice <= filter.price[1];
+          return room && floor && square && price;
+        });
+      }
+      return state.catalog;
+    },
   },
 };

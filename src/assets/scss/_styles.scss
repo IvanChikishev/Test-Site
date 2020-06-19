@@ -43,6 +43,11 @@ hr {
     text-align: center;
 }
 
+.text {
+    font-family: $font-family-subtitle;
+    font-size: $font-size-md;
+}
+
 .--show {
     opacity: 1 !important;
     visibility: visible !important;
@@ -64,6 +69,7 @@ hr {
 .container {  
     width: 100%;
     margin: 0 auto;
+    max-width: 850px;
     &--full { 
         max-width: 1170px;
     }

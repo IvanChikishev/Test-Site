@@ -10,7 +10,14 @@
         <Catalog />
       </div>
     </div>
-    <Map />
+    <div class="block">
+      <div class="container">
+        <h2 class="title">
+          Местоположение
+        </h2>
+        <Map />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -27,6 +34,9 @@ export default {
     Catalog,
     Banner,
     Map,
+  },
+  created() {
+    this.$store.dispatch('dataRequest');
   },
 };
 </script>

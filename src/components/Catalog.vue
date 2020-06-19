@@ -1,7 +1,7 @@
 <template>
   <div class="catalog">
     <div
-      v-for="item in catalog"
+      v-for="item in filteredCatalog"
       :key="item.id"
       class="catalog-item"
     >
@@ -53,25 +53,7 @@ import { mapGetters } from 'vuex';
 
 export default {
   computed: {
-    ...mapGetters(['getCatalog', 'getFilter']),
-    catalog() {
-      let catalog = (this.getCatalog) ? this.getCatalog : [];
-      const filter = (this.getFilter) ? this.getFilter : [];
-      if (this.getCatalog) {
-        catalog = catalog.filter((el) => {
-          const room = el.short === filter.room;
-          const floor = el.floor >= filter.floor[0] && el.floor <= filter.floor[1];
-          const square = el.square >= filter.square[0] && el.square <= filter.square[1];
-          console.log(el.square >= filter.square[0], el.square <= filter.square[1]);
-          console.log(room, floor, square);
-          return room && floor && square;
-        });
-      }
-      return catalog;
-    },
-  },
-  async created() {
-    await this.$store.dispatch('dataRequest');
+    ...mapGetters(['filteredCatalog']),
   },
 };
 </script>
